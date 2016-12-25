@@ -9,6 +9,7 @@ access_secret = 'UD1yQ3MLzSu6MbBSO7no9zLNECBXyN5AObB05mrQwlmBR'
 def get_all_tweets(screen_name):
 	#Twitter only allows access to a users most recent 3240 tweets with this method
 
+	print "Collecting from user: " + screen_name
 	#authorize twitter, initialize tweepy
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_key, access_secret)
@@ -23,36 +24,44 @@ def get_all_tweets(screen_name):
 	#save most recent tweets
 	alltweets.extend(new_tweets)
 
+	if len(alltweets) == 0:
+		return 
+
 	#save the id of the oldest tweet less one
 	oldest = alltweets[-1].id - 1
 
 	#keep grabbing tweets until there are no tweets left to grab
 
-	print "getting tweets before %s" % (oldest)
+	prev_len = len(alltweets)
 
-	#all subsiquent requests use the max_id param to prevent duplicates
-	new_tweets = api.user_timeline(screen_name = screen_name,count=200,max_id=oldest)
+	while len(alltweets) < 150:
+		print "Collected so far: " + str(len(alltweets))
+		#all subsiquent requests use the max_id param to prevent duplicates
+		new_tweets = api.user_timeline(screen_name = screen_name,count=200,max_id=oldest)
 
-	#save most recent tweets
-	alltweets.extend(new_tweets)
+		#save most recent tweets
+		alltweets.extend(new_tweets)
 
-	#update the id of the oldest tweet less one
-	oldest = alltweets[-1].id - 1
+		#update the id of the oldest tweet less one
+		oldest = alltweets[-1].id - 1
 
-	print "...%s tweets downloaded so far" % (len(alltweets))
+		if len(alltweets) == prev_len:
+			break
+
+		prev_len = len(alltweets)
 
 	#transform the tweepy tweets into a 2D array that will populate the csv
-	outtweets = [[tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in alltweets]
+	outtweets = [[tweet.id_str, tweet.created_at] for tweet in alltweets]
 
 	#write the csv
-	with open('./tweets/%s_tweets.csv' % screen_name, 'wb') as f:
+	with open('./tweets/%s_tweets.csv' % screen_name, 'w+') as f:
 		writer = csv.writer(f)
 		writer.writerow(["id","created_at","text"])
 		writer.writerows(outtweets)
 
-	pass
-
-screen_names = ['Snowden', 'realDonaldTrump']
 
 if __name__ == '__main__':
-	get_all_tweets("nickbilton")
+	with open("users_list_1.txt") as f:
+		for name in f:
+			name = name.strip()
+			get_all_tweets(name)

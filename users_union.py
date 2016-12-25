@@ -15,9 +15,9 @@ def find_union(file1, file2):
 				user_list.append(user)
 
 	return user_list
+	
 if __name__ == "__main__":
 
-	users = find_union("users_list_1.txt", "users_list_2.txt")
+	users = find_union("users_list_1.txt", "users_list_1.txt")
 
-	print "Found: " + str(len(users)) + " unique users"
-	print users
+	print len(users)
