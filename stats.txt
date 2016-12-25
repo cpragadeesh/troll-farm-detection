@@ -1,3 +1,0 @@
-Total Tweets    : 26053 Tweets
-Users			: 141 Users
-Fake Accounts   : 5 Accounts

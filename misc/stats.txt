@@ -1,0 +1,9 @@
+Total Tweets    : 26053 Tweets
+Users		: 141 Users
+Fake Accounts   : 5 Accounts
+
+Fake tweet facts:
+
+First tweet: 9:00 - 10:00
+Last tweet: 19:00 - 20:00
+# tweets/day: 7-8
